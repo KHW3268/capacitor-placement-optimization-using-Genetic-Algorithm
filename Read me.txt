@@ -1,0 +1,4 @@
+matlab을 사용한 시뮬레이션입니다.
+
+genetic_algorithm은 objective_function을 사용했고,
+standard는 objective_function2를 사용했습니다.
