@@ -1,0 +1,111 @@
+//Genetic_Algorithm
+//function
+function voltage_drop = objective_function(x)
+    % 상수 정의
+    I = 0.8; % 전류
+    V = 7;
+    rho = 7.026e-4; % 구리의 저항률
+
+    % 부품의 위치
+    power_supply = [210, 330];
+    M7_diode = [850, 110];
+    PC1 = [x(1), x(2)];
+    NCP1117ST50T3G_chip = [305, 685];
+    PC2 = [x(3), x(4)];
+
+    % 부품 사이의 거리 계산
+    d1 = norm(power_supply - M7_diode) * 0.025;
+    d2 = norm(M7_diode - PC1) * 0.025;
+    d3 = norm(PC1 - NCP1117ST50T3G_chip) * 0.025;
+    d4 = norm(NCP1117ST50T3G_chip - PC2) * 0.025;
+
+    % 각 부품 사이의 전압 강하 계산
+    V1 = I * d1 * rho;
+    V2 = I * d2 * rho;
+    V3 = I * d3 * rho;
+    V4 = I * d4 * rho;
+    
+    % 부품의 전압 강하를 빼줌
+    V_diode = 0.6; % diode의 전압강하
+    V_chip = 1.06; % NCP1117ST50T3G_chip의 전압강하
+
+    % 전체 전압 강하
+    voltage_drop = V - (V1 + V2 + V3 + V4 + V_diode + V_chip);
+end
+
+% 비선형 제약 조건 정의
+function [c, ceq] = nonlinear_constraints(x)
+    c = norm([x(1), x(2)] - [x(3), x(4)]) - 1e-6; % PC1과 PC2의 위치가 겹치지 않도록 하는 제약
+    ceq = []; % 등호 제약은 없음
+end
+
+
+//main
+options = gaoptimset('PopulationSize', 100, 'Generations', 100, 'StallGenLimit', 50, 'PlotFcns', @gaplotbestf);
+
+% 변수의 수, 하한, 상한 설정
+nvars = 4; % 변수의 수를 4로 설정 (PC1의 x, y 좌표와 PC2의 x, y 좌표)
+lb = [700, 330, 980, 330]; % PC1과 PC2의 x, y 최소값
+ub = [750, 390, 1030, 390]; % PC1과 PC2의 x, y 최대값
+
+% ga 함수 호출
+[x, fval] = ga(@objective_function, nvars, [], [], [], [], lb, ub, [], options);
+
+% 최적의 위치와 최소 전압강하 출력
+fprintf('The optimal locations are PC1: [%f, %f], PC2: [%f, %f]\n', x(1), x(2), x(3), x(4));
+fprintf('The minimum voltage drop is %.8f\n', fval);
+
+
+
+
+
+
+
+standard
+//function
+function voltage_drop = objective_function2(x)
+    % 상수 정의
+    I = 0.8; % 전류
+    A = 0.1; % 도체의 단면적을 가정합니다. 실제 값에 따라 수정이 필요합니다.
+    V = 7;
+    rho = 0.0702; % 구리의 저항률
+
+    % 부품의 위치
+    power_supply = [210, 330];
+    M7_diode = [850, 110];
+    PC1 = [1005, 360];
+    NCP1117ST50T3G_chip = [305, 685];
+    PC2 = [725, 360];
+
+    % 부품 사이의 거리 계산
+    d1 = norm(power_supply - M7_diode) * 0.025;
+    d2 = norm(M7_diode - PC1) * 0.025;
+    d3 = norm(PC1 - NCP1117ST50T3G_chip) * 0.025;
+    d4 = norm(NCP1117ST50T3G_chip - PC2) * 0.025;
+
+    % 각 부품 사이의 전압 강하 계산
+    V1 = I * d1 * rho;
+    V2 = I * d2 * rho;
+    V3 = I * d3 * rho;
+    V4 = I * d4 * rho;
+
+    % 부품의 전압 강하를 빼줌
+    V_diode = 0.6; % diode의 전압강하
+    V_chip = 1.06; % NCP1117ST50T3G_chip의 전압강하
+
+    % 전체 전압 강하
+    voltage_drop = V - (V1 + V2 + V3 + V4 + V_diode + V_chip);
+    
+end
+
+
+//main
+
+x = 0;
+
+% 함수 호출 및 결과 출력
+voltage_drop = objective_function2(x);
+fprintf('전원부 전압강하: %.8f\n', voltage_drop);
+
+
+
