@@ -29,7 +29,8 @@ function voltage_drop = objective_function(x)
     V_chip = 1.06; % NCP1117ST50T3G_chip의 전압강하
 
     % 전체 전압 강하
-    voltage_drop = V - (V1 + V2 + V3 + V4 + V_diode + V_chip);
+    voltage_drop = (V1 + V2 + V3 + V4 + V_diode + V_chip)*1000;
+    
 end
 
 % 비선형 제약 조건 정의
@@ -54,7 +55,7 @@ ub = [750, 390, 1030, 390]; % PC1과 PC2의 x, y 최대값
 % 최적의 위치와 최소 전압강하 출력
 fprintf('The optimal locations are PC1: [%f, %f], PC2: [%f, %f]\n', x(1), x(2), x(3), x(4));
 fprintf('The minimum voltage drop is %.8f\n', fval);
-fprintf('dem')
+
 
 
 
@@ -91,7 +92,7 @@ function voltage_drop = objective_function2(x)
     V_chip = 1.06; % NCP1117ST50T3G_chip의 전압강하
 
     % 전체 전압 강하
-    voltage_drop = V - (V1 + V2 + V3 + V4 + V_diode + V_chip);
+    voltage_drop = (V1 + V2 + V3 + V4 + V_diode + V_chip)*1000;
     
 end
 
@@ -102,6 +103,7 @@ x = 0;
 
 % 함수 호출 및 결과 출력
 voltage_drop = objective_function2(x);
-fprintf('전원부 전압강하: %.8f\n', voltage_drop);
+fprintf('전압강하: %.8f\n', voltage_drop);
+
 
 
